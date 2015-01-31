@@ -1,0 +1,39 @@
+bundle agent linux_kernel_params_inventory
+{
+  meta:
+    enable_linux_kernel_params_inventory_autorun::
+      "tags" slist => { "autorun" };
+      
+  vars:
+    linux::
+      "kernel_param_sourcefile"
+        string => "/proc/cmdline";
+
+      "kernel_param_data"
+        data => data_readstringarrayidx($(kernel_param_sourcefile), "", "\s+", 1, 0);
+
+      "kernel_params"
+        handle => "inventory_kernel_params_kernel_params",
+        slist => getvalues("kernel_param_data[0]");
+
+      "c_kernel_params_map[$(kernel_params)]"
+        string => canonify("$(kernel_params)");
+
+      "$(c_kernel_params_map[$(kernel_params)])"
+        string => "$(kernel_params)",
+        meta => { 
+                  "inventory",
+                  "attribute_name=Kernel Parameters",
+                  "derived_from=$(kernel_param_sourcefile)"
+                };
+
+  reports:
+    DEBUG|DEBUG_linux_kernel|DEBUG_linux_kernel_params_inventory.linux::
+      "DEBUG $(this.bundle): Activated";
+      "$(const.t)Kernel Param Source: $(kernel_param_sourcefile)";
+      "$(const.t)$(kernel_params)";
+
+    !linux.(DEBUG|DEBUG_linux_kernel|DEBUG_linux_kernel_params_inventory)::
+      "$(const.t)SKIPPED: I don't know how to inventory kernel params on non linux hosts";
+}
+

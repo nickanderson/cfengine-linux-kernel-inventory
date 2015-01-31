@@ -1,0 +1,34 @@
+bundle common linux_kernel_def_file_control
+{
+  vars:
+    linux::
+      "input[linux_kernel_params_inventory]"
+        string => "$(this.promise_dirname)/policy/linux_kernel_params_inventory.cf";
+
+    any::
+      "inputs" slist => getvalues(input);
+
+  reports:
+    DEBUG|DEBUG_linux_kernel|DEBUG_linux_kernel_params_file_control::
+      "DEBUG $(this.bundle): augmenting body file control with '$(inputs)'";
+
+    !linux.(DEBUG|DEBUG_linux_kernel|DEBUG_linux_kernel_params_inventory)::
+      "SKIPPED: I don't know how to inventory kernel params on non linux hosts";
+}
+
+body file control
+{
+  inputs => { @(linux_kernel_def_file_control.inputs) };
+}
+
+bundle agent linux_kernel_autorun
+{
+  meta:
+    enable_linux_kernel_autorun|enable_linux_kernel_params_inventory_autorun::
+      "tags" slist => { "autorun" };
+
+  methods:
+    enable_linux_kernel_params_inventory_autorun::
+      "inventory"
+        usebundle => linux_kernel_params_inventory;
+}

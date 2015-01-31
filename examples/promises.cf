@@ -1,0 +1,25 @@
+bundle common inputs
+{
+  vars:
+    "input[linux_kernel_params_inventory]"
+      string => "$(this.promise_dirname)/../policy/linux_kernel_params_inventory.cf";
+
+    "inputs" slist => getvalues(input);
+}
+
+body common control
+{
+  inputs => { @(inputs.inputs) };
+  bundlesequence => { "service_catalogue" };
+}
+
+bundle agent service_catalogue
+{
+  classes:
+    "DEBUG" expression => "any", scope => "namespace";
+
+  methods:
+
+      "linux_kernel_params_inventory"
+        usebundle => linux_kernel_params_inventory;
+}

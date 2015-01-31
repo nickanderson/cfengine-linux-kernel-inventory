@@ -1,0 +1,31 @@
+* linux_kernel
+
+** linux_kernel_params_inventory
+Inventory the paramaters passed to the linux kernel during boot.
+*** Integration instructions
+Add def.cf to inputs and enable the feautures you want.
+Add `"services/linux_kernel/def.cf",` to body common control inputs, then enable the features you want.
+
+cf-agent -KIf ./promises.cf --define DEBUG_linux_kernel_params_inventory,enable_linux_kernel_params_inventory_autorun
+(Probably you would set the classes in your policy some where)
+
+*** Example Usage
+#+begin_src sh :results raw drawer
+cd examples
+chmod 600 promises.cf
+chmod 600 ../policy/linux_kernel_params_inventory.cf
+cf-agent -KIf ./promises.cf
+#+end_src
+
+#+RESULTS:
+:RESULTS:
+R: DEBUG linux_kernel_params_inventory: Activated
+R: 	Kernel Param Source: /proc/cmdline
+R: 	BOOT_IMAGE=/boot/vmlinuz-3.13.0-45-generic
+R: 	root=UUID=86e0a742-8346-47dd-827a-fb578562ca6a
+R: 	ro
+R: 	quiet
+R: 	splash
+R: 	vt.handoff=7
+:END:
+
