@@ -2,9 +2,56 @@
 
 ** linux_kernel_params_inventory
 Inventory the paramaters passed to the linux kernel during boot.
-*** Integration instructions
-Add def.cf to inputs and enable the feautures you want.
-Add `"services/linux_kernel/def.cf",` to body common control inputs, then enable the features you want.
+
+** How to integrate into your policy
+
+First get the policy into your masterfiles
+
+#+begin_src sh
+  cd /tmp
+  export MASTERFILES=/var/cfengine/masterfiles
+  git clone https://github.com/nickanderson/cfengine-linux_kernel.git
+  cd cfengine-linux_kernel
+  mkdir -p $MASTERFILES/services/linux_kernel
+  git archive master | tar -x -C $MASTERFILES/services/linux_kernel
+#+end_src
+
+
+Include def.cf in your inputs.
+
+#+begin_src cfengine
+  body common control
+  {
+        inputs => { 
+                    # Reports
+                    @(cfengine_reports.inputs),
+  
+                   "services/linux_kernel/def.cf",
+                    
+                    # autorun system
+                    @(services_autorun.inputs),
+        };
+  }
+#+end_src
+
+Activate the features you want in the proper context.
+
+For example to activate `linux_kernel_params_inventory` on all linux hosts.
+
+#+begin_src cfengine
+  bundle agent main
+  # User Defined Service Catalogue
+  {
+    methods:
+      # Activate your custom policies here
+      linux::
+        "Inventory Kernel Boot Params"
+          usebundle => linux_kernel_params_inventory;
+
+  }
+#+end_src
+
+
 
 cf-agent -KIf ./promises.cf --define DEBUG_linux_kernel_params_inventory,enable_linux_kernel_params_inventory_autorun
 (Probably you would set the classes in your policy some where)

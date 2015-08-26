@@ -1,9 +1,6 @@
 bundle agent linux_kernel_params_inventory
 {
-  meta:
-    enable_linux_kernel_params_inventory_autorun::
-      "tags" slist => { "autorun" };
-      
+
   vars:
     linux::
       "kernel_param_sourcefile"

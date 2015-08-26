@@ -1,0 +1,11 @@
+bundle agent linux_kernel_autorun
+{
+  meta:
+    enable_linux_kernel_autorun|enable_linux_kernel_params_inventory_autorun::
+      "tags" slist => { "autorun" };
+
+  methods:
+    enable_linux_kernel_params_inventory_autorun::
+      "inventory"
+        usebundle => linux_kernel_params_inventory;
+}
