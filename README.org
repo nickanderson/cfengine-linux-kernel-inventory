@@ -1,9 +1,13 @@
-* linux_kernel
+#+TITLE: Linux kernel inventory
 
-** linux_kernel_params_inventory
+Inventory various information related to the Linux kernel.
+
+* kernel_params
 Inventory the paramaters passed to the linux kernel during boot.
 
-** How to integrate into your policy
+* lsmod
+
+* How to integrate into your policy
 
 First get the policy into your masterfiles
 

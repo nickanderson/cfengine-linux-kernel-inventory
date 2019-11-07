@@ -1,0 +1,6 @@
+{
+    "inputs": [ "services/linux-kernel-inventory/policy/kernel-params.cf", "services/linux-kernel-inventory/lsmod.cf" ],
+  "vars": {
+      "control_common_bundlesequence_end": [ "linux-kernel-inventory:lsmod", "linux-kernel-inventory:kernel-params" ]
+    }
+}

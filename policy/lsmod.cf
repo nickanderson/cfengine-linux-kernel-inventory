@@ -1,0 +1,46 @@
+#!/var/cfengine/bin/cf-agent -f-
+body file control
+{
+  inputs => { "$(sys.libdir)/commands.cf", "$(sys.libdir)/paths.cf" };
+  namespace => "linux_kernel_inventory";
+}
+bundle agent lsmod
+{
+  vars:
+      "lsmod_output" string => "$(sys.statedir)/lsmod";
+
+      "lsmod"
+        data => data_readstringarray( $(lsmod_output),
+                                      "^Module[^\n]*",
+                                      " ",
+                                      inf,
+                                      inf),
+        if => and( not( isvariable( lsmod )),
+                   fileexists( $(lsmod_output) ));
+
+      "modules" slist => getindices( lsmod ), if => not( isvariable( modules ));
+
+      "used_module[$(modules)]"
+        string => "$(modules)",
+        if => not( strcmp( "0", "$(lsmod[$(modules)])" )),
+        meta => { "inventory", "attribute_name=Used linux kernel modules" };
+
+      "unused_module[$(modules)]"
+        string => "$(modules)",
+        if => strcmp( "0", "$(lsmod[$(modules)])" ),
+        meta => { "inventory", "attribute_name=Unused linux kernel modules" };
+
+      "num_modules" int => length( modules ), meta => { "inventory", "attribute_name=Number linux kernel modules loaded" };
+      "num_unused" int => length( getindices( unused_moduels ) ), meta => { "inventory", "attribute_name=Number linux kernel moduels unused" };
+  commands:
+      "$(paths.lsmod) > $(lsmod_output)"
+        contain => default:in_shell;
+}
+body file control
+{
+  namespace => "default";
+}
+bundle agent __main__
+{
+    methods: "linux_kernel_inventory:lsmod";
+}

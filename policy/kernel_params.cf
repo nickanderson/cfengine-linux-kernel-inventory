@@ -1,4 +1,9 @@
-bundle agent linux_kernel_params_inventory
+body file control
+{
+        inputs => { "$(sys.libdir)/commands.cf", "$(sys.libdir)/paths.cf" };
+        namespace => "linux_kernel_inventory";
+}
+bundle agent kernel_params
 {
 
   vars:
@@ -18,19 +23,22 @@ bundle agent linux_kernel_params_inventory
 
       "$(c_kernel_params_map[$(kernel_params)])"
         string => "$(kernel_params)",
-        meta => { 
+        meta => {
                   "inventory",
                   "attribute_name=Kernel Parameters",
                   "derived_from=$(kernel_param_sourcefile)"
                 };
 
   reports:
-    DEBUG|DEBUG_linux_kernel|DEBUG_linux_kernel_params_inventory.linux::
-      "DEBUG $(this.bundle): Activated";
-      "$(const.t)Kernel Param Source: $(kernel_param_sourcefile)";
-      "$(const.t)$(kernel_params)";
-
     !linux.(DEBUG|DEBUG_linux_kernel|DEBUG_linux_kernel_params_inventory)::
       "$(const.t)SKIPPED: I don't know how to inventory kernel params on non linux hosts";
 }
 
+body file control
+{
+        namespace => "default";
+}
+bundle agent __main__
+{
+      methods: "linux_kernel_inventory:kernel_params";
+}
