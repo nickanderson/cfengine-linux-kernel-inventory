@@ -1,7 +1,7 @@
 #!/var/cfengine/bin/cf-agent -f-
 body file control
 {
-  inputs => { "$(sys.libdir)/commands.cf", "$(sys.libdir)/paths.cf" };
+  #inputs => { "$(sys.libdir)/commands.cf", "$(sys.libdir)/paths.cf" };
   namespace => "linux_kernel_inventory";
 }
 bundle agent lsmod
