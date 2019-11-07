@@ -30,8 +30,14 @@ bundle agent lsmod
         if => strcmp( "0", "$(lsmod[$(modules)])" ),
         meta => { "inventory", "attribute_name=Unused linux kernel modules" };
 
-      "num_modules" int => length( modules ), meta => { "inventory", "attribute_name=Number linux kernel modules loaded" };
-      "num_unused" int => length( getindices( unused_moduels ) ), meta => { "inventory", "attribute_name=Number linux kernel moduels unused" };
+      "num_modules"
+        int => length( modules ),
+        meta => { "inventory", "attribute_name=Number linux kernel modules loaded" };
+
+      "num_unused"
+        int => length( getindices( unused_module ) ),
+        meta => { "inventory", "attribute_name=Number linux kernel moduels unused" };
+
   commands:
       "$(paths.lsmod) > $(lsmod_output)"
         contain => default:in_shell;
