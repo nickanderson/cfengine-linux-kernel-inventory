@@ -39,6 +39,7 @@ bundle agent lsmod
         meta => { "inventory", "attribute_name=Number linux kernel moduels unused" };
 
   commands:
+    default:_stdlib_path_exists_lsmod::
       "$(paths.lsmod) > $(lsmod_output)"
         contain => default:in_shell;
 }
