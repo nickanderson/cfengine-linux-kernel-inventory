@@ -1,4 +1,8 @@
-#+TITLE: Linux kernel inventory
+#+TITLE: Linux kernel inventory (DEPRECATED)
+
+Inventory from this repository has moved, please find their new homes:
+- [[https://github.com/nickanderson/cfengine-inventory-kernel-boot-params][Kernel boot params]]
+- [[https://github.com/nickanderson/cfengine-inventory-kernel-modules][Kernel modules]]
 
 Inventory various information related to the Linux kernel.
 
